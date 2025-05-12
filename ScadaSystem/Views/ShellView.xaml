@@ -21,7 +21,7 @@
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     mc:Ignorable="d">
 
-    <materialDesign:DialogHost Identifier="MainDialog">
+    <materialDesign:DialogHost Identifier="ShellDialog">
         <ContentControl x:Name="container" />
     </materialDesign:DialogHost>
 
