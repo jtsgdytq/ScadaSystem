@@ -1,0 +1,28 @@
+﻿<mah:MetroWindow
+    x:Class="ScadaSystem.Views.ShellView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:local="clr-namespace:ScadaSystem.Views"
+    xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:vm="clr-namespace:ScadaSystem.ViewModels"
+    Title="喷涂工艺系统"
+    Width="800"
+    Height="450"
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    Background="{DynamicResource MaterialDesign.Brush.Background}"
+    FontFamily="Microsoft YaHei"
+    FontSize="16"
+    TextElement.FontSize="16"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
+    mc:Ignorable="d">
+
+    <materialDesign:DialogHost Identifier="MainDialog">
+        <ContentControl x:Name="container" />
+    </materialDesign:DialogHost>
+
+</mah:MetroWindow>
