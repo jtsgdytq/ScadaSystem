@@ -62,15 +62,41 @@
                     </GridViewColumn>
 
                     <GridViewColumn
-                        Width="200"
+                        Width="150"
                         DisplayMemberBinding="{Binding CreateTime}"
                         Header="创建时间" />
                     <GridViewColumn
-                        Width="200"
+                        Width="150"
                         DisplayMemberBinding="{Binding UpdateTime}"
                         Header="更新时间" />
+                    <GridViewColumn Width="100" Header="操作">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBlock Style="{StaticResource TextBlockStyle}" Text="修改">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="PreviewMouseUp">
+                                                <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.EditCommand}" CommandParameter="{Binding}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </TextBlock>
+                                    <Rectangle Width="20" />
+                                    <TextBlock Style="{StaticResource TextBlockStyle}" Text="删除">
+                                        <i:Interaction.Triggers>
+                                            <i:EventTrigger EventName="PreviewMouseUp">
+                                                <i:InvokeCommandAction Command="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType=UserControl}, Path=DataContext.DeleteCommand}" CommandParameter="{Binding}" />
+                                            </i:EventTrigger>
+                                        </i:Interaction.Triggers>
+                                    </TextBlock>
+                                </StackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+
                 </GridView>
+
             </ListView.View>
+
         </ListView>
     </Grid>
 </UserControl>
