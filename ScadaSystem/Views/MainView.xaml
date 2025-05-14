@@ -64,7 +64,7 @@
                 DockPanel.Dock="Bottom">
                 <i:Interaction.Triggers>
                     <i:EventTrigger EventName="PreviewMouseUp">
-                        <i:InvokeCommandAction Command="{Binding ChangeUserCommand}"/>
+                        <i:InvokeCommandAction Command="{Binding ChangeUserCommand}" />
                     </i:EventTrigger>
                 </i:Interaction.Triggers>
                 <materialDesign:PackIcon

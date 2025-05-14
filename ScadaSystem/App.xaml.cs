@@ -1,13 +1,22 @@
 ﻿using ControlzEx.Theming;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NLog;
+using NLog.Extensions.Logging;
+using ScadaSystem.Helpers;
+using ScadaSystem.Models;
 using ScadaSystem.Services;
 using ScadaSystem.ViewModels;
-using ScadaSystem.Views; 
+using ScadaSystem.Views;
+using SqlSugar;
 using System.Configuration;
 using System.Data;
 using System.Drawing;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
+using LogLevel = Microsoft.Extensions.Logging.LogLevel;
 
 namespace ScadaSystem;
 
@@ -45,6 +54,10 @@ public partial class App : Application
     private IServiceProvider ConfigureService()
     {
         var services = new ServiceCollection();
+       
+
+        // 配置类实现
+        ConfigureJsonByBinder(services);
         /// <summary>
         ///  注册UI层
         //shell主界面
@@ -86,7 +99,45 @@ public partial class App : Application
 
         //注册服务层
         services.AddSingleton<UserSession>();
+       
         return services.BuildServiceProvider();
+    }
+
+    private void ConfigureJsonByBinder(ServiceCollection services)
+    {
+        //使用 ConfigurationBuilder 加载 appsettings.json
+        var cfgBuilder = new ConfigurationBuilder()
+            .SetBasePath(Environment.CurrentDirectory+"\\Configs")
+            .AddJsonFile("appsettings.json", optional: true, reloadOnChange: true);
+        var configuration = cfgBuilder.Build();
+        //将 IConfiguration 注册到 DI 容器中
+        services.AddSingleton<IConfiguration>(configuration).AddLogging(log =>
+        {
+            log.ClearProviders();
+            log.SetMinimumLevel(LogLevel.Trace);
+            log.AddNLog();
+        });
+        //获取日志中的参数
+        var nlogConfig = configuration.GetSection("NLog");
+        //将 NLog 配置绑定到 NLog.Config.LoggingConfiguration
+        LogManager.Configuration = new NLog.Config.LoggingConfiguration();
+
+        //配置数据库
+        var parsResult = Enum.TryParse<SqlSugar.DbType>(configuration["SqlParam:DbType"], out var result);
+        var connectionString = configuration["SqlParam:ConnectionString"];
+        if(parsResult)
+        {
+            SqlSugarHelper.AddSqlSugarSetup(result, connectionString);
+        }
+        // 3. 参数配置及映射 IOptionsSnapshot<RootParam>.Value
+        services.AddOptions()
+            .Configure<RootParam>(e => configuration.Bind(e))
+            .Configure<SqlParam>(e => configuration.GetSection("SqlParam").Bind(e))
+            .Configure<SystemParam>(e => configuration.GetSection("SystemParam").Bind(e))
+            .Configure<PlcParam>(e => configuration.GetSection("PlcParam").Bind(e));
+
+
+
     }
 }
 

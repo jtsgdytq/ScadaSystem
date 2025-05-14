@@ -69,11 +69,13 @@
                     Width="100"
                     Height="40"
                     Margin="20,5,5,5"
+                    Command="{Binding OutPageCommand}"
                     Content="导出分页" />
                 <Button
                     Width="100"
                     Height="40"
                     Margin="20,5,5,5"
+                    Command="{Binding OutAllPageCommand}"
                     Content="导出全部" />
                 <Button
                     Width="100"

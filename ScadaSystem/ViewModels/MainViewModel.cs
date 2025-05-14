@@ -2,6 +2,9 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using HslCommunication.Profinet.Panasonic.Helper;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using NLog;
 using ScadaSystem.Helpers;
 using ScadaSystem.Messages;
 using ScadaSystem.Models;
@@ -18,14 +21,23 @@ namespace ScadaSystem.ViewModels
 {
     public partial class MainViewModel:ObservableObject
     {
+        //测试
+        private readonly ILogger<MainViewModel> _logger;
+        private RootParam RootParamProp;
+
 
         public UserSession UserSession { get;} 
         public List<Menu> MenuEntities { get; set; } = new List<Menu>();
 
-        public MainViewModel(UserSession _UserSession )
+        
+
+        public MainViewModel(UserSession _UserSession , ILogger<MainViewModel> logger,IOptionsSnapshot<RootParam>optionsSnapshot)
         {
+           
+            //UserSession = _UserSession;
+            //_logger = logger;
+            RootParamProp = optionsSnapshot.Value;
             InitData();
-            UserSession = _UserSession;
         }
         /// <summary>
         /// 初始化菜单列表
@@ -34,6 +46,8 @@ namespace ScadaSystem.ViewModels
         {
             
             MenuEntities = SqlSugarHelper.Db.Queryable<Menu>().ToList();
+            //_logger.LogInformation("日志测试");
+            //_logger.LogInformation(RootParamProp.PlcParam.PlcIp);
 
         }
         /// <summary>
