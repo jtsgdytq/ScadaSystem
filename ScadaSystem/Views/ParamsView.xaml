@@ -4,11 +4,138 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ScadaSystem.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    xmlns:ucs="clr-namespace:ScadaSystem.Ucs"
+    xmlns:vm="clr-namespace:ScadaSystem.ViewModels"
+    d:DataContext="{d:DesignInstance vm:ParamsViewModel}"
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    Background="{DynamicResource MaterialDesign.Brush.Background}"
+    FontFamily="Microsoft YaHei"
+    FontSize="16"
+    TextElement.FontSize="16"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     mc:Ignorable="d">
     <Grid>
-        <TextBlock FontSize="50" Text="ParamsView" />
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition />
+            <ColumnDefinition />
+        </Grid.ColumnDefinitions>
+        <Border BorderBrush="#546e7a" BorderThickness="1">
+            <StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label
+                        Margin="5"
+                        Content="PLC地址:"
+                        FontSize="30" />
+                    <TextBox
+                        Width="120"
+                        Height="40"
+                        materialDesign:HintAssist.Hint="PLC地址"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding RootParamProp.PlcParam.PlcIp}" />
+                    <Label
+                        Margin="50,5,0,0"
+                        Content="PLC类型:"
+                        FontSize="30" />
+                    <TextBox
+                        Width="120"
+                        Height="40"
+                        materialDesign:HintAssist.Hint="PLC类型"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding RootParamProp.PlcParam.PlcType}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label
+                        Margin="5"
+                        Content="端口号:  "
+                        FontSize="30" />
+                    <TextBox
+                        Width="120"
+                        Height="40"
+                        materialDesign:HintAssist.Hint="端口号:"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding RootParamProp.PlcParam.PlcPort}" />
+                    <Label
+                        Margin="50,5,0,0"
+                        Content="超时时间:"
+                        FontSize="30" />
+                    <TextBox
+                        Width="120"
+                        Height="40"
+                        materialDesign:HintAssist.Hint="超时时间"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding RootParamProp.PlcParam.PlcConnectTimeOut}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label
+                        Margin="5"
+                        Content="循环时间:"
+                        FontSize="30" />
+                    <TextBox
+                        Width="120"
+                        Height="40"
+                        materialDesign:HintAssist.Hint="循环时间"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding RootParamProp.PlcParam.PlcCycleInterval}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="自动采集：" FontSize="30" />
+                    <ToggleButton
+                        Width="80"
+                        Margin="5"
+                        IsChecked="{Binding RootParamProp.PlcParam.AutoCollect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignSwitchLightToggleButton}"
+                        ToolTip="自动采集开关" />
+                    <Rectangle Width="50" />
+                    <Label Content="模拟数据：" FontSize="30" />
+                    <ToggleButton
+                        Width="80"
+                        Margin="5"
+                        IsChecked="{Binding RootParamProp.PlcParam.AutoMock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignSwitchLightToggleButton}"
+                        ToolTip="模拟数据开关" />
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
+        <Border
+            Grid.Column="2"
+            BorderBrush="#546e7a"
+            BorderThickness="1">
+            <StackPanel>
+
+                <StackPanel Orientation="Horizontal">
+                    <Label
+                        Margin="5"
+                        Content="软件授权:"
+                        FontSize="30" />
+                    <TextBox
+                        Width="200"
+                        Height="40"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding RootParamProp.SystemParam.AuthCode}" />
+                </StackPanel>
+                <StackPanel Orientation="Horizontal">
+                    <Label Content="自动清除：" FontSize="30" />
+                    <ToggleButton
+                        Width="80"
+                        Margin="5"
+                        IsChecked="{Binding RootParamProp.SystemParam.AutoClearLog, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                        Style="{StaticResource MaterialDesignSwitchLightToggleButton}"
+                        ToolTip="自动清除开关" />
+
+                    <Label Content="清除天数：" FontSize="30" />
+                    <TextBox
+                        Width="200"
+                        Height="40"
+                        Style="{StaticResource MaterialDesignFloatingHintTextBox}"
+                        Text="{Binding RootParamProp.SystemParam.AutoClearDay}" />
+                </StackPanel>
+
+            </StackPanel>
+        </Border>
     </Grid>
 </UserControl>

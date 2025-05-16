@@ -34,9 +34,9 @@ namespace ScadaSystem.ViewModels
         public MainViewModel(UserSession _UserSession , ILogger<MainViewModel> logger,IOptionsSnapshot<RootParam>optionsSnapshot)
         {
            
-            //UserSession = _UserSession;
+            UserSession = _UserSession;
             //_logger = logger;
-            RootParamProp = optionsSnapshot.Value;
+            //RootParamProp = optionsSnapshot.Value;
             InitData();
         }
         /// <summary>
