@@ -3,6 +3,7 @@
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:i="http://schemas.microsoft.com/xaml/behaviors"
     xmlns:local="clr-namespace:ScadaSystem.Views"
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
@@ -88,7 +89,17 @@
                         Margin="5"
                         IsChecked="{Binding RootParamProp.PlcParam.AutoCollect, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource MaterialDesignSwitchLightToggleButton}"
-                        ToolTip="自动采集开关" />
+                        ToolTip="自动采集开关">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Checked">
+                                <i:InvokeCommandAction Command="{Binding AutoCollectionCommand}" />
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="Unchecked">
+                                <i:InvokeCommandAction Command="{Binding AutoCollectionCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ToggleButton>
                     <Rectangle Width="50" />
                     <Label Content="模拟数据：" FontSize="30" />
                     <ToggleButton
@@ -96,7 +107,17 @@
                         Margin="5"
                         IsChecked="{Binding RootParamProp.PlcParam.AutoMock, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
                         Style="{StaticResource MaterialDesignSwitchLightToggleButton}"
-                        ToolTip="模拟数据开关" />
+                        ToolTip="模拟数据开关">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Checked">
+                                <i:InvokeCommandAction Command="{Binding AutoMockCommand}" />
+                            </i:EventTrigger>
+
+                            <i:EventTrigger EventName="Unchecked">
+                                <i:InvokeCommandAction Command="{Binding AutoMockCommand}" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ToggleButton>
                 </StackPanel>
 
             </StackPanel>

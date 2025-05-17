@@ -99,7 +99,10 @@ public partial class App : Application
 
         //注册服务层
         services.AddSingleton<UserSession>();
-       
+
+        //PLC数据
+        services.AddSingleton<GrobalConfig>();
+
         return services.BuildServiceProvider();
     }
 
@@ -129,7 +132,7 @@ public partial class App : Application
         {
             SqlSugarHelper.AddSqlSugarSetup(result, connectionString);
         }
-        // 3. 参数配置及映射 IOptionsSnapshot<RootParam>.Value
+        
         services.AddOptions()
             .Configure<RootParam>(e => configuration.Bind(e))
             .Configure<SqlParam>(e => configuration.GetSection("SqlParam").Bind(e))

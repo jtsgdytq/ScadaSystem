@@ -80,7 +80,7 @@ namespace ScadaSystem.Models
         /// <summary>
         /// 自动清除日志
         /// </summary>
-        public string AutoClearLog { get; set; }
+        public bool AutoClearLog { get; set; }
         /// <summary>
         /// 自动清除天数
         /// </summary>

@@ -27,6 +27,7 @@
     <PackageReference Include="MiniExcel" Version="1.41.1" />
     <PackageReference Include="NLog.Extensions.Logging" Version="5.4.0" />
     <PackageReference Include="SqlSugarCore" Version="5.1.4.193" />
+    <PackageReference Include="ValueConverters" Version="3.1.22" />
   </ItemGroup>
 
   <ItemGroup>

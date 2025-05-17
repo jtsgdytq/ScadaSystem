@@ -11,10 +11,13 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using NLog;
+
+using HslCommunication;
+using Microsoft.Extensions.Logging;
+
 namespace ScadaSystem.Helpers
 {
-    class GrobalConfig : IDisposable
+    public class GrobalConfig : IDisposable
     {
         
         public SiemensS7Net Plc;
@@ -34,40 +37,48 @@ namespace ScadaSystem.Helpers
 
 
 
-        public GrobalConfig(IOptionsSnapshot<RootParam> _options, ILogger logger)
+        public GrobalConfig(IOptionsSnapshot<RootParam> _options, ILogger<GrobalConfig> logger)
         {
+            this.logger = logger;
             options = _options;
 
             InitPLC();//初始化PLC
 
             InitExcelsAddress();
-            this.logger = logger;
+            
         }
 
         private void InitExcelsAddress()
         {
-            var RootPath=AppDomain.CurrentDomain.BaseDirectory+"Configs\\";
-            var ReadPath = RootPath + "TulingRead.xlsx";
-            var WritePath = RootPath + "TulingWrite.xlsx";
-            if (!File.Exists(ReadPath) || !File.Exists(WritePath))
+            var rootPath = AppDomain.CurrentDomain.BaseDirectory + "Configs\\";
+            var readPath = rootPath + "TulingRead.xlsx";
+            var writePath = rootPath + "TulingWrite.xlsx";
+
+            if (!File.Exists(readPath) || !File.Exists(writePath))
             {
-                logger.Error($"找不到读/写文件路径{ReadPath}\n{WritePath}");
-                return; 
+                logger.LogError($"找不到读/写文件路径: {readPath}\n{writePath}");
+                return;
             }
+
             try
             {
-                var ReadEntitice= MiniExcel.Query<ReadEntity>(ReadPath).Where(x=>!string.IsNullOrEmpty(ReadPath)).ToList();
-                var WriteEntitice = MiniExcel.Query<ReadEntity>(ReadPath).Where(x => !string.IsNullOrEmpty(WritePath)).ToList();
+                // ✅ 修复点：检查字段是否为空，而不是路径是否为空
+                readEntities = MiniExcel.Query<ReadEntity>(readPath)
+                    .Where(x => !string.IsNullOrWhiteSpace(x.En) && !string.IsNullOrWhiteSpace(x.Address))
+                    .ToList();
 
+                writeEntities = MiniExcel.Query<WriteEntity>(writePath)
+                    .Where(x => !string.IsNullOrWhiteSpace(x.En) && !string.IsNullOrWhiteSpace(x.Address))
+                    .ToList();
 
+                logger.LogInformation($"成功加载读实体：{readEntities.Count} 条，写实体：{writeEntities.Count} 条");
             }
             catch (Exception e)
             {
-
-                logger.Error($"MiniExcel 读取文件异常{e.Message}");
+                logger.LogError($"MiniExcel 读取文件异常：{e.Message}");
             }
-
         }
+
 
         private void InitPLC()
         {
@@ -84,14 +95,13 @@ namespace ScadaSystem.Helpers
                 var OpResult = await Plc.ConnectServerAsync();
                 if (!OpResult.IsSuccess)
                 {
-                    logger.Error($"PLC连接失败{options.Value.PlcParam.PlcIp}:{options.Value.PlcParam.PlcPort}");
+                    logger.LogError($"PLC连接失败{options.Value.PlcParam.PlcIp}:{options.Value.PlcParam.PlcPort}");
                 }
 
             }
             catch (Exception e)
             {
-
-                logger.Error($"PLC连接异常{e.Message}");
+                logger.LogError($"PLC连接异常{e.Message}");
             }
         }
 
@@ -123,7 +133,7 @@ namespace ScadaSystem.Helpers
                     }
                     catch (Exception e)
                     {
-                        logger.Error(e.Message);
+                        logger.LogError(e.Message);
                     }
                 }
 
@@ -132,26 +142,105 @@ namespace ScadaSystem.Helpers
 
         private async Task UpdateControlData()
         {
-            
+            await UpdatePlcToReadDataDic<float> ("Data", "DBD");
         }
         private async Task UpdateMonitorData()
         {
-           
+            await UpdatePlcToReadDataDic<bool>("Monitor", "DBX");
         }
         private async Task UpdateProcessData()
         {
-            
+            await UpdatePlcToReadDataDic<bool>("Control", "DBX");
         }
+
+        private async Task UpdatePlcToReadDataDic<T>(string module, string addressType)
+        {
+            try
+            {
+                var addresses = readEntities.Where(x => x.Module == module
+                && x.Address.Contains(addressType)).ToList();
+
+                if ((addresses.Count <1))
+                {
+                    return;
+                }
+
+                OperateResult<T[]>? result;
+
+                if (typeof(T) == typeof(bool))
+                {
+                    result = await Plc
+                        .ReadBoolAsync(addresses
+                        .First().Address, (ushort)addresses.Count) as OperateResult<T[]>;
+                }
+                else if (typeof(T) == typeof(float))
+                {
+                    result = await Plc
+                        .ReadFloatAsync(addresses
+                            .First().Address, (ushort)addresses.Count) as OperateResult<T[]>;
+                }
+                else
+                {
+                    logger.LogError("不支持传入的类型");
+
+                    return;
+                }
+
+                // 将 result 结果放入到字典中
+                if (!result.IsSuccess)
+                {
+                    logger.LogError("数据读取失败");
+
+                    return;
+                }
+
+                for (int i = 0; i < addresses.Count; i++)
+                {
+                    if (ReadDataDic.ContainsKey(addresses[i].En))
+                    {
+                        ReadDataDic[addresses[i].En] = result.Content[i];
+                    }
+                    else
+                    {
+                        ReadDataDic.TryAdd(addresses[i].En, result.Content[i]);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                logger.LogError(e.Message);
+            }
+        }
+
+
+
         private async Task SaveAsync()
         {
             
         }
 
-        
 
-        
+        /// <summary>
+        /// 获取实时数据
+        /// </summary>
 
-        
+        public T GetValue<T>(string key)
+        {
+            if(ReadDataDic.TryGetValue(key, out object value))
+            {
+                return (T)value;
+            }
+            else
+            {
+                logger.LogError($"字典中不存在键 {key}");
+                return default(T);
+            }
+            {
+                return (T)ReadDataDic[key];
+            }
+           
+        }
+
 
         public void StopCollection()
         {
@@ -165,7 +254,7 @@ namespace ScadaSystem.Helpers
             }
             catch (Exception e)
             {
-                logger.Error(e.Message);
+                logger.LogError(e.Message);
             }
         }
 

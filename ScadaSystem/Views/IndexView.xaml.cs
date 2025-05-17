@@ -31,6 +31,7 @@ namespace ScadaSystem.Views
 
         public void InitData()
         {
+            
             DataContext = App.Current.Services.GetService<IndexViewModel>();
         }
 
