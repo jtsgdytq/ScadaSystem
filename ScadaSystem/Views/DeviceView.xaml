@@ -8,9 +8,9 @@
     xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:vm="clr-namespace:ScadaSystem.ViewModels"
-    d:DataContext="{d:DesignInstance vm:MainViewModel}"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    d:DataContext="{d:DesignInstance vm:DeviceViewModel}"
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
     Background="{DynamicResource MaterialDesign.Brush.Background}"
     FontFamily="Microsoft YaHei"
     FontSize="16"
@@ -19,6 +19,206 @@
     TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     mc:Ignorable="d">
     <Grid>
-        <TextBlock FontSize="50" Text="DeviceView" />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="45" />
+            <RowDefinition Height="4*" />
+            <RowDefinition Height="10*" />
+        </Grid.RowDefinitions>
+        <Border Grid.Row="0" Background="#009688">
+            <TextBlock
+                HorizontalAlignment="Center"
+                FontSize="30"
+                Foreground="White"
+                Text="产线总控制" />
+        </Border>
+        <Border
+            Grid.Row="1"
+            BorderBrush="#50a0ff"
+            BorderThickness="1">
+            <UniformGrid Rows="1">
+                <Button
+                    Width="200"
+                    Height="100"
+                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                    materialDesign:ButtonProgressAssist.Value="1"
+                    Background="LawnGreen"
+                    Command="{Binding DeviceControlCommand}"
+                    CommandParameter="TotalStart"
+                    Content="总启动"
+                    FontSize="30" />
+                <Button
+                    Width="200"
+                    Height="100"
+                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                    materialDesign:ButtonProgressAssist.Value="1"
+                    Background="Red"
+                    Command="{Binding DeviceControlCommand}"
+                    CommandParameter="TotalStop"
+                    Content="总停止"
+                    FontSize="30" />
+                <Button
+                    Width="200"
+                    Height="100"
+                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                    materialDesign:ButtonProgressAssist.Value="1"
+                    Background="CadetBlue"
+                    Command="{Binding DeviceControlCommand}"
+                    CommandParameter="MechanicalReset"
+                    Content="机械复位"
+                    FontSize="30" />
+                <Button
+                    Width="200"
+                    Height="100"
+                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                    materialDesign:ButtonProgressAssist.Value="1"
+                    Background="OrangeRed"
+                    Command="{Binding DeviceControlCommand}"
+                    CommandParameter="AlarmReset"
+                    Content="报警复位"
+                    FontSize="30" />
+                <Button
+                    Width="200"
+                    Height="100"
+                    materialDesign:ButtonProgressAssist.IsIndeterminate="True"
+                    materialDesign:ButtonProgressAssist.IsIndicatorVisible="True"
+                    materialDesign:ButtonProgressAssist.Value="1"
+                    Background="#414141"
+                    Command="{Binding DeviceControlCommand}"
+                    CommandParameter="IdleRun"
+                    Content="空体运行"
+                    FontSize="30" />
+            </UniformGrid>
+        </Border>
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <UniformGrid Grid.Column="0" Columns="1">
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Label
+                        Height="50"
+                        Content="脱脂工位"
+                        FontSize="30" />
+                    <ToggleButton
+                        Width="80"
+                        Margin="5"
+                        IsChecked="{Binding ScadaReadData.DegreasingStationOpen}"
+                        Style="{StaticResource MaterialDesignSwitchLightToggleButton}">
+                        <i:Interaction.Triggers>
+                            <i:EventTrigger EventName="Checked">
+                                <i:InvokeCommandAction Command="{Binding DegreasingStationOpenCommand}" CommandParameter="DegreasingStationOpen" />
+                            </i:EventTrigger>
+                            <i:EventTrigger EventName="Unchecked">
+                                <i:InvokeCommandAction Command="{Binding DegreasingStationOpenCommand}" CommandParameter="DegreasingStationOpen" />
+                            </i:EventTrigger>
+                        </i:Interaction.Triggers>
+                    </ToggleButton>
+                    <Rectangle Width="50" />
+                    <Label
+                        Height="50"
+                        Content="水分炉工位"
+                        FontSize="30" />
+                    <ToggleButton
+                        Width="80"
+                        Margin="5"
+                        IsChecked="{Binding ScadaReadData}"
+                        Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Label
+                        Height="50"
+                        Content="粗洗工位"
+                        FontSize="30" />
+                    <ToggleButton
+                        Width="80"
+                        Margin="5"
+                        IsChecked="{Binding ScadaReadData}"
+                        Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                    <Rectangle Width="50" />
+                    <Label
+                        Height="50"
+                        Content="冷却室工位"
+                        FontSize="30" />
+                    <ToggleButton
+                        Width="80"
+                        Margin="5"
+                        IsChecked="{Binding ScadaReadData}"
+                        Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Label
+                        Height="50"
+                        Content="陶化工位"
+                        FontSize="30" />
+                    <ToggleButton
+                        Width="80"
+                        Margin="5"
+                        IsChecked="{Binding ScadaReadData}"
+                        Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                    <Rectangle Width="50" />
+                    <Label
+                        Height="50"
+                        Content="固化炉工位"
+                        FontSize="30" />
+                    <ToggleButton
+                        Width="80"
+                        Margin="5"
+                        IsChecked="{Binding ScadaReadData}"
+                        Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                </StackPanel>
+                <StackPanel HorizontalAlignment="Center" Orientation="Horizontal">
+                    <Label
+                        Height="50"
+                        Content="精洗工位"
+                        FontSize="30" />
+                    <ToggleButton
+                        Width="80"
+                        Margin="5"
+                        IsChecked="{Binding ScadaReadData}"
+                        Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                    <Rectangle Width="50" />
+                    <Label
+                        Height="50"
+                        Content="输送机工位"
+                        FontSize="30" />
+                    <ToggleButton
+                        Width="80"
+                        Margin="5"
+                        IsChecked="{Binding ScadaReadData}"
+                        Style="{StaticResource MaterialDesignSwitchLightToggleButton}" />
+                </StackPanel>
+
+            </UniformGrid>
+
+
+
+
+            <Border
+                Grid.Column="1"
+                BorderBrush="#50a0ff"
+                BorderThickness="1">
+                <GroupBox Margin="10" Header="日志文件">
+                    <GroupBox.InputBindings>
+                        <MouseBinding Command="{Binding ClearLogCommand}" Gesture="LeftDoubleClick" />
+                    </GroupBox.InputBindings>
+                    <ScrollViewer VerticalScrollBarVisibility="Auto">
+                        <TextBlock
+                            FontSize="20"
+                            Foreground="Black"
+                            Text="{Binding LogContent}"
+                            TextWrapping="Wrap" />
+                    </ScrollViewer>
+                </GroupBox>
+            </Border>
+
+        </Grid>
+
+
     </Grid>
 </UserControl>

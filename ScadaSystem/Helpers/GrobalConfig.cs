@@ -25,6 +25,7 @@ namespace ScadaSystem.Helpers
         /// 公开字典
         /// </summary>
         public ConcurrentDictionary <string,object> ReadDataDic {  get; set; }=new ConcurrentDictionary<string,object>();
+       
 
         public List<ReadEntity> readEntities { get; set; }= new List<ReadEntity>();
         public List<WriteEntity> writeEntities { get; set; } = new List<WriteEntity>();
@@ -33,11 +34,13 @@ namespace ScadaSystem.Helpers
         private readonly ILogger logger;
 
         private  CancellationTokenSource _cts= new CancellationTokenSource();
+        /// <summary>
+        /// PLC连接状态
+        /// </summary>
+        public bool PLCConnnection { get; set; } 
 
 
-
-
-        public GrobalConfig(IOptionsSnapshot<RootParam> _options, ILogger<GrobalConfig> logger)
+    public GrobalConfig(IOptionsSnapshot<RootParam> _options, ILogger<GrobalConfig> logger)
         {
             this.logger = logger;
             options = _options;
@@ -93,6 +96,8 @@ namespace ScadaSystem.Helpers
             try
             {
                 var OpResult = await Plc.ConnectServerAsync();
+                
+                PLCConnnection = OpResult.IsSuccess;
                 if (!OpResult.IsSuccess)
                 {
                     logger.LogError($"PLC连接失败{options.Value.PlcParam.PlcIp}:{options.Value.PlcParam.PlcPort}");
