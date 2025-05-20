@@ -22,16 +22,19 @@ namespace ScadaSystem.Views
     /// </summary>
     public partial class ChartView : UserControl
     {
+
+        private readonly ChartViewModel _chartViewModel;
         public ChartView()
         {
             InitializeComponent();
-            InitData();
+            _chartViewModel= App.Current.Services.GetService<ChartViewModel>();
+            DataContext = _chartViewModel;
+            Loaded += ChartView_Loaded;
         }
 
-        public void InitData()
+        private void ChartView_Loaded(object sender, RoutedEventArgs e)
         {
-            DataContext = App.Current.Services.GetService<ChartViewModel>();
+            _chartViewModel.InitPlot(WpfPlotShow);
         }
-
     }
 }

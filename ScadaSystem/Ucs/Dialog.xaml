@@ -42,7 +42,7 @@
             <Button
                 Margin="15"
                 Command="{x:Static materialDesign:DialogHost.CloseDialogCommand}"
-                Content="Yse"
+                Content="Yes"
                 IsCancel="True"
                 IsDefault="True"
                 Style="{StaticResource MaterialDesignFlatButton}">

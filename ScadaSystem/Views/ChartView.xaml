@@ -4,11 +4,60 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:local="clr-namespace:ScadaSystem.Views"
+    xmlns:materialDesign="http://materialdesigninxaml.net/winfx/xaml/themes"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-    d:DesignHeight="450"
-    d:DesignWidth="800"
+    xmlns:vm="clr-namespace:ScadaSystem.ViewModels"
+    xmlns:wpf="clr-namespace:ScottPlot.WPF;assembly=ScottPlot.WPF"
+    d:DataContext="{d:DesignInstance vm:ChartViewModel}"
+    d:DesignHeight="800"
+    d:DesignWidth="1200"
+    Background="{DynamicResource MaterialDesign.Brush.Background}"
+    FontFamily="Microsoft YaHei"
+    FontSize="16"
+    TextElement.FontSize="16"
+    TextElement.FontWeight="Regular"
+    TextElement.Foreground="{DynamicResource MaterialDesignBody}"
     mc:Ignorable="d">
     <Grid>
-        <TextBlock Text="ChartView " />
+        <Grid.RowDefinitions>
+            <RowDefinition Height="auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <StackPanel Margin="5" Orientation="Horizontal">
+            <Label
+                Margin="5,0,10,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="开始时间:" />
+            <DatePicker
+                Width="120"
+                Height="40"
+                materialDesign:HintAssist.Hint="StarDate"
+                SelectedDate="{Binding StartTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
+            <Label
+                Margin="5,0,10,0"
+                HorizontalAlignment="Center"
+                VerticalAlignment="Center"
+                Content="结束时间:" />
+            <DatePicker
+                Width="120"
+                Height="40"
+                materialDesign:HintAssist.Hint="EndDate"
+                SelectedDate="{Binding EndTime, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
+                Style="{StaticResource MaterialDesignFloatingHintDatePicker}" />
+            <Button
+                Width="100"
+                Height="40"
+                Margin="20,5,5,5"
+                Command="{Binding SearchCommand}"
+                Content="查询数据"
+                Style="{StaticResource ButtonStyle}" />
+        </StackPanel>
+
+        <wpf:WpfPlot
+            x:Name="WpfPlotShow"
+            Grid.Row="1"
+            Margin="5" />
     </Grid>
 </UserControl>
