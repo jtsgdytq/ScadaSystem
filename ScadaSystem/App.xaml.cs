@@ -88,8 +88,7 @@ public partial class App : Application
         services.AddSingleton<ChartView>();
         services.AddSingleton<ChartViewModel>();
         //ReportView
-        services.AddSingleton<ReportView>();
-        services.AddSingleton<ReportViewModel>();
+        
         //LogView
         services.AddSingleton<LogView>();
         services.AddSingleton<LogViewModel>();
